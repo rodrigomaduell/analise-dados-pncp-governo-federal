@@ -114,9 +114,13 @@ def main():
     fato["valor_total_estimado"] = (fato["valor_unitario_estimado"] * fato["quantidade"]).round(2)
     fato["valor_total_homologado"] = (fato["valor_unitario_homologado"] * fato["quantidade"]).round(2)
 
+    # COMPLEMENTO - preservar os dados para auditoria
+    fato_original = fato.copy()
+
     # =========================================================================================
     # ETAPA 5 - ITENS REJEITADOS  (regra 4)   (nao precisa criar arquivo: so nao entram na fato)
     # =========================================================================================
+         
     est, hom = fato["valor_total_estimado"], fato["valor_total_homologado"]
     # Dica: ~(coluna > 0) e verdadeiro quando o valor e <= 0 OU esta vazio (NaN). Os sinais: | = "ou"
     rejeitado = (
@@ -134,6 +138,46 @@ def main():
     print(f"Itens rejeitados (nao entram na fato): {rejeitado.sum()}   (prova real: 99)")
     # COMPLETE: fique so com os itens NAO rejeitados (use ~rejeitado)
     fato = fato[~rejeitado].copy()
+
+
+    # =========================================================================================
+    # COMPLEMENTO - AUDITORIA DOS MOTIVOS DE REJEICAO
+    # =========================================================================================
+    # Registra apenas o primeiro motivo aplicavel a cada item rejeitado.
+    condicoes_rejeicao = [
+        ("quantidade_invalida", ~(fato_original["quantidade"] > 0)),
+        ("valor_unitario_estimado_invalido", ~(fato_original["valor_unitario_estimado"] > 0)),
+        ("valor_unitario_homologado_invalido", ~(fato_original["valor_unitario_homologado"] > 0)),
+        ("orcamento_sigiloso", fato_original["sigiloso"]),
+        ("valor_total_estimado_menor_que_1", fato_original["valor_total_estimado"] < 1),
+        (
+            "homologado_acima_de_1000_vezes_estimado",
+            fato_original["valor_total_homologado"] > fato_original["valor_total_estimado"] * 1000,
+        ),
+        (
+            "valor_total_acima_de_1_trilhao",
+            (fato_original["valor_total_estimado"] > 1e12)
+            | (fato_original["valor_total_homologado"] > 1e12),
+        ),
+    ]
+
+
+    motivo_rejeicao = pd.Series(index=fato_original.index, dtype="object")
+
+    for motivo, condicao in condicoes_rejeicao:
+        aplicar = motivo_rejeicao.isna() & condicao
+        motivo_rejeicao.loc[aplicar] = motivo
+
+    rejeitados_auditados = motivo_rejeicao.notna()
+
+    print("\n=== AUDITORIA DOS MOTIVOS DE REJEICAO ===")
+    print(f"Total de itens rejeitados: {rejeitados_auditados.sum()}")
+    print(motivo_rejeicao[rejeitados_auditados].value_counts().to_string())
+    print(
+        "Soma das rejeicoes por motivo:",
+        motivo_rejeicao[rejeitados_auditados].value_counts().sum(),
+    )
+
 
     # =========================================================================================
     # ETAPA 6 - COMPARAVEL E ECONOMIA  (regra 6)
