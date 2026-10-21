@@ -1,8 +1,8 @@
-# Ambiente virtual
+# Ambiente virtual Python
 .venv/
 venv/
 
-# Arquivos temporários do Python
+# Cache e arquivos compilados do Python
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -15,3 +15,6 @@ __pycache__/
 # Arquivos do sistema
 .DS_Store
 Thumbs.db
+
+# Configurações locais do VS Code
+.vscode/
