@@ -1,8 +1,6 @@
-
 | Nome                    | Instituição | Curso             | Turma |
 | ----------------------- | ------------- | ----------------- | :---: |
 | Rodrigo Maduell Fonseca | SCTEC / SENAI | Análise de Dados |  T2  |
-
 
 # Análise de Contratações Públicas do Governo Federal
 
@@ -77,9 +75,18 @@ A distribuição do volume homologado por perfil também corresponde aos valores
 
 ## Modelagem e análise SQL
 
-Os dados foram organizados em uma estrutura dimensional no MySQL, com uma tabela fato de itens contratados e dimensões relacionadas a órgãos, fornecedores, localidades e modalidades de contratação.
+Os dados foram organizados em um modelo dimensional no MySQL, composto por uma tabela fato (`fato_item_contratado`) e quatro dimensões: dim_orgao, dim_fornecedor, dim_localidade e dim_modalidade.
 
-As consultas analíticas foram organizadas em scripts SQL .
+A criação das tabelas, definição das chaves e restrições de integridade estão documentadas em `sql/01_criar_banco.sql`. As consultas analíticas estão organizadas em `sql/02_perguntas.sql`, contemplando as seis perguntas de negócio propostas no projeto:
+
+1. **Economia global:** volume estimado e homologado dos itens comparáveis, economia nominal e percentual.
+2. **Fornecedores:** ranking dos dez maiores fornecedores por volume homologado e participação no total.
+3. **Modalidades:** comparação do volume financeiro e da economia entre as modalidades de contratação.
+4. **Ciclo de compras:** duração média, mínima e máxima dos ciclos por órgão, considerando apenas órgãos com pelo menos cinco ciclos válidos.
+5. **Distribuição regional:** volume homologado e indicadores de economia por unidade federativa e região.
+6. **Perfil dos gastos:** distribuição do volume homologado entre Bens, Serviços e Obras e Engenharia.
+
+As consultas utilizam agregações e filtros para responder às perguntas com base nos dados armazenados no modelo dimensional.
 
 ## Dashboard Power BI
 
@@ -112,11 +119,9 @@ Na imagem acima as Sprints estão cortadas devido o estreitamento das colunas, a
 
 ![Evolução Kanban](docs/img/Kanban_evolucao_02.png)
 
-
 * **Modelo Dimensional Star Schema no Power BI**
 
 ![Modelo Dimensional](docs/img/print_modelo_dimensional_star_schema.PNG)
-
 
 * **Paineis Construídos para resposta das 6 perguntas de negócio no Power BI**
 
@@ -144,7 +149,6 @@ Na imagem acima as Sprints estão cortadas devido o estreitamento das colunas, a
 
 ![P6 - Perfil](docs/img/P6_Painel_Perfil.png)
 
-
 ## Estrutura do Projeto
 
 ```text
@@ -155,15 +159,15 @@ Na imagem acima as Sprints estão cortadas devido o estreitamento das colunas, a
 ├── src/
 ├── sql/
 ├── docs/
-│   ├── analise_resultados_sql.md
 │   └── img/
 ├── powerbi/
 │   └── Dashboards.pbix
 └── README.md
 ```
 
+## Execução do projeto
 
-## Execução da preparação dos dados
+### 1. Preparação dos dados
 
 Com Python e as dependências do projeto instaladas, execute a partir da raiz do repositório:
 
@@ -171,20 +175,30 @@ Com Python e as dependências do projeto instaladas, execute a partir da raiz do
 python -m src.montar_tabelas
 ```
 
-O script realiza a montagem das tabelas processadas e apresenta os totais da auditoria e os indicadores utilizados na conferência com o Anexo 8 do enunciado.
+O script realiza a leitura dos arquivos brutos, aplica as regras de limpeza e negócio, gera a tabela fato e as dimensões processadas e apresenta os totais da auditoria e os indicadores de conferência com o Anexo 8 do enunciado.
 
-A execução das consultas SQL e a atualização do dashboard dependem da configuração do banco de dados e da conexão utilizada no ambiente local.
+### 2. Criação e carga do banco de dados
 
-## Resultados e limitações
+Com o MySQL configurado e as credenciais definidas no ambiente local:
 
-A análise identificou economia de 14,46% nos itens comparáveis e diferenças na distribuição dos recursos entre fornecedores, modalidades, regiões e perfis de contratação.
+- Execute o processo de carga disponibilizado em `src/carregar.py`, que utiliza o script `sql/01_criar_banco.sql` para criar a estrutura do banco.
+- A carga utiliza os dados processados em `data/processed/` para popular as tabelas.
 
-Os indicadores de economia são limitados aos itens contemplados pelas regras de comparabilidade. Da mesma forma, os ciclos de contratação dependem da disponibilidade e da validade das datas utilizadas no cálculo.
+### 3. Consultas analíticas
 
-As concentrações financeiras e os prazos elevados apontam situações que podem justificar análises complementares, mas não comprovam, isoladamente, irregularidades ou suas causas.
+Execute as consultas de `sql/02_perguntas.sql` no MySQL Workbench ou em outra ferramenta compatível para reproduzir as análises das seis perguntas de negócio.
 
-## Status
+### 4. Dashboard
 
-Projeto desenvolvido com preparação e auditoria dos dados em Python, armazenamento e análise em MySQL/SQL e visualização analítica em Power BI.
+Abra `powerbi/Dashboards.pbix` no Power BI Desktop para consultar o modelo analítico, as medidas e as páginas do dashboard.
 
-Consulte os scripts, a documentação SQL e o arquivo do dashboard para conhecer os detalhes da implementação.
+A execução completa depende da configuração local do Python, MySQL e Power BI, incluindo os conectores necessários para a comunicação entre as ferramentas.
+
+
+## Melhorias futuras
+
+Como possibilidades de evolução do projeto, destacam-se:
+
+- Automatizar a atualização periódica dos dados a partir das fontes do PNCP.
+- Ampliar o histórico analisado para acompanhar a evolução dos indicadores ao longo do tempo.
+- Aprofundar a investigação de concentrações de fornecedores, variações regionais e ciclos de contratação atípicos.
