@@ -102,47 +102,47 @@ As capturas do modelo dimensional e das páginas do dashboard podem ser consulta
 
 * **Metodologias Ágeis - Planejamento em Sprints:**
 
-![1793576930667](image/README/1793576930667.png)
+  ![Lista Sprints](docs/img/Planejamento_Sprints.png)
 
-- Na imagem acima as Sprints estão cortadas devido o estreitamento das colunas, abaixo está a imagem constando as 7 Sprints:
+Na imagem acima as Sprints estão cortadas devido o estreitamento das colunas, abaixo está a imagem constando as 7 Sprints:
 
-![1793577058624](image/README/1793577058624.png)
+![Lista Sprints](docs/img/Lista_Sprints.png)
 
 - Demonstração da evolução do projeto fazendo o uso de Kanban para organização e acompanhamento:
 
-![1793577121864](image/README/1793577121864.png)
+![Evolução Kanban](docs/img/Kanban_evolucao_02.png)
 
 
 * **Modelo Dimensional Star Schema no Power BI**
 
-![1793577260046](image/README/1793577260046.png)
+![Modelo Dimensional](docs/img/print_modelo_dimensional_star_schema.PNG)
 
 
 * **Paineis Construídos para resposta das 6 perguntas de negócio no Power BI**
 
 - P1 - Painel Economia:
 
-![1793577396845](image/README/1793577396845.png)
+![P1 - Economia](docs/img/P1_Painel_Economia.png)
 
 - P2 - Painel Fornecedores:
 
-![1793577438757](image/README/1793577438757.png)
+![P2 - Fornecedores](docs/img/P2_Painel_Fornecedores.png)
 
 - P3 - Painel Modalidades:
 
-![1793577482149](image/README/1793577482149.png)
+![P3 - Painel Modalidades](docs/img/P3_Painel_Modalidades.png)
 
 - P4 - Painel Ciclo:
 
-![1793577515017](image/README/1793577515017.png)
+![P4 - Painel Ciclo](docs/img/P4_Painel_Ciclo.png)
 
 - P5 - Painel Regional:
 
-![1793577551839](image/README/1793577551839.png)
+![P5 - Regional](docs/img/P5_Painel_Regional.png)
 
 - P6 - Painel Perfil:
 
-![1793577579767](image/README/1793577579767.png)
+![P6 - Perfil](docs/img/P6_Painel_Perfil.png)
 
 
 ## Estrutura do Projeto
